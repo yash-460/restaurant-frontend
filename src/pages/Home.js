@@ -1,10 +1,11 @@
 import { Card, CardActionArea, CardContent, CardMedia, Skeleton, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { useEffect, useState } from "react";
-import { Path } from "./Constants";
+import { Path } from "../util/Constants";
 import img from "../img/img.png";
 import StarIcon from '@mui/icons-material/Star';
 import { redirect, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const cardOverrideStyle = {
     width: 300,
@@ -18,17 +19,17 @@ function Home(){
     const [failed, setFailed] = useState(false);
     const navigate = useNavigate();
     
-    useEffect(getData,[]);
+    useEffect(() => {getData()},[]);
 
-    function getData(){
-        fetch(Path.baseURL + '/Store')
-       .then((response) => {
-            if(!response.ok){
-                throw Error(response.statusText);
-            }
-            return response.json();
-       }).then((data )=> {setStores(data);console.log(data)})
-       .catch((error) => setFailed(true));
+    async function getData(){
+        try{
+            let response = await axios.get(Path.storeService + '/Store');
+            if(response.data?.$values.length != 0)       
+                setStores(response.data?.$values);
+            else setFailed(true);
+        }catch (error){
+            setFailed(true);
+        }
     }
 
     function goToStoreDetail(id){
@@ -44,7 +45,7 @@ function Home(){
                         {data.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {data.rating} <StarIcon/>
+                    {data.rating} <StarIcon sx={{verticalAlign:"middle"}}/>
                     </Typography>
                 </CardContent>
             </CardActionArea>
@@ -70,8 +71,7 @@ function Home(){
     return (
        <Container sx={{border:"2px solid black", marginTop:"50px"}}>
           {failed ? showError() : (stores.length === 0 ?  displaySkeleton() : stores.map((store) => displayStore(store)))}
-       </Container> 
-        
+       </Container>
     );
 };
 

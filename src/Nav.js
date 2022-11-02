@@ -11,8 +11,7 @@ function Nav(){
     const iconStyle = {color:"black",padding:"0 10px"};
     return (
         <Box>
-            <Paper sx={{display:"flex", padding:"10px"}} square>
-                <BrowserRouter style={{}}>  
+            <Paper sx={{display:"flex", padding:"18px"}} square>
                 <div>
                     <Link to="/" >LOGO</Link>
                 </div>
@@ -21,10 +20,8 @@ function Nav(){
                         <Link to="/Cart"><ShoppingCartIcon style={iconStyle} /></Link>
                         <Link to="/Favorite"><BookmarksIcon style={iconStyle}/></Link>
                         <Link to="/Orders"><ReceiptIcon style={iconStyle}/></Link>
-                        <Link to="/Profile"><AccountCircleIcon style={iconStyle}/></Link>
-                                      
+                        <Link to="/Profile"><AccountCircleIcon style={iconStyle}/></Link>                                 
                 </div>
-                </BrowserRouter>  
             </Paper>
         </Box>
     );

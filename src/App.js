@@ -1,25 +1,47 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import {Login} from './pages/Login';
-import { Signin } from './pages/Login';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import { AddProduct } from './Management/AddProduct';
+import { EditRestaurant } from './Management/EditRestaurant';
+import RestaurantHome from './Management/Home';
+import { RegisterRestaurant } from './Management/RegisterRestaurant';
 import Nav from './Nav';
-import { EditRestaurant } from './pages/EditRestaurant';
-import { AddProduct } from './pages/AddProduct';
-import { Paginator } from './components/Pagination';
-import RestaurantHome from './pages/RestaurantHome';
-import { RegisterRestaurant } from './pages/RegisterRestaurant';
+import Home from './pages/Home';
+import { Login, Signin } from './pages/Login';
+import Restaurant from './pages/Restaurant';
+import {RequireLogin} from './util/auth';
 
 function App() {
+
   return (
     <div>
-      <Nav/>
       <BrowserRouter>
+        <Nav/>
         <Routes>
-          <Route path="/home" element={<Home/>} />
-          <Route path="Store/:storeId" element={<RestaurantHome/>}/>
+          <Route path="/" element={<Home/>} ex/>
+          <Route path="/Store/:storeId" element={<Restaurant/>}/>
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/SignUp" element={<Signin />}/>
+
+          
+          <Route path="/Management" element={<RestaurantHome/>}/>
+          <Route path="/Register" element={
+            <RequireLogin>
+              <RegisterRestaurant/>
+            </RequireLogin>
+          }/>
+          <Route path="/Management/Edit" element={
+            <RequireLogin>
+              <EditRestaurant/>
+            </RequireLogin>
+          }/>
+          <Route path="/Management/Add" element={
+            <RequireLogin>
+              <AddProduct/>
+            </RequireLogin>
+          }/>
         </Routes>
       </BrowserRouter>
+
     </div>
   );
 }
