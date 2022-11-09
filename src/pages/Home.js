@@ -69,7 +69,7 @@ function Home(){
     }
 
     return (
-       <Container sx={{border:"2px solid black", marginTop:"50px"}}>
+       <Container sx={{ marginTop:"30px"}}>
           {failed ? showError() : (stores.length === 0 ?  displaySkeleton() : stores.map((store) => displayStore(store)))}
        </Container>
     );

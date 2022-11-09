@@ -1,18 +1,20 @@
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 export const Auth = {
     getJWT: () =>{
-        return localStorage.getItem('jwtToken');
+        return sessionStorage.getItem('jwtToken');
     }
 }
 
 export function RequireLogin(props){
+    const location = useLocation();
+
     if(Auth.getJWT()){
         return(
            <div>{props.children}</div>
         );
     }else {
-        return <Navigate to="/login" replace/>
+        return <Navigate to={`/login?${location.pathname.replace('/','')}`} replace/>
     }
     
 }

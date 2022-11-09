@@ -16,7 +16,8 @@ function RegisterRestaurant(){
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
 
-    async function submitForm(){
+    async function submitForm(e){
+        e.preventDefault();
         setErrorMessage("");
         setLoading(true);
         try{           
@@ -27,6 +28,12 @@ function RegisterRestaurant(){
                         'Authorization': `Bearer ${Auth.getJWT()}`
                     }
             });
+            response  = await axios.post(
+                Path.authService + "/authenticate/RefreshToken",{
+                headers:{
+                    'Authorization': `Bearer ${Auth.getJWT()}`
+                }});
+            sessionStorage.setItem('jwtToken', response.data.token);
             navigate("/Management");
         }catch (error){
             console.log(error);
@@ -53,28 +60,28 @@ function RegisterRestaurant(){
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>
-                <h2 style={{textAlign:"center"}}>Register Shop</h2>
-                
-                <TextField value={form.name} name="name" onChange={handleChange} required label="Shop Name" size="small" margin="dense" inputProps={{size:"40"}}/>
-                <br/>
-                <TextField value={form.registrationNumber} name="registrationNumber" onChange={handleChange} required label="Registration Number" size="small" margin="dense" inputProps={{size:"20"}}/>
-                <br/>
-                <TextField value={form.streetName} name="streetName" onChange={handleChange} label="Street Name" size="small" margin="dense" inputProps={{size:"16"}}/>
-                &nbsp;&nbsp;
-                <TextField value={form.city} name="city" onChange={handleChange} label="City" size="small" margin="dense" inputProps={{size:"15"}}/>                
-                <br/>
-                <TextField value={form.province} name="province" onChange={handleChange} label="Province" size="small" margin="dense" inputProps={{size:"16"}}/>
-                &nbsp;&nbsp;    
-                <TextField value={form.zip} name="zip" onChange={handleChange} label="Zip code" size="small" margin="dense" inputProps={{size:"15"}}/>                
-                <br/>
-                <Button variant="contained" size="small" component="label" sx={{marginTop:"10px"}} startIcon={<PhotoCamera/>}>
-                    Upload
-                    <input hidden accept="image/*" multiple type="file" name="imgLoc" onChange={handleChange}/>
-                </Button>
-                <br/>
-                <LoadingButton loading={loading}  variant="contained" size="small" sx={{marginTop:"10px"}} onClick={submitForm}>Register</LoadingButton>
-                <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 
-
+                <h2 style={{textAlign:"center"}}>Register Restaurant</h2>
+                <form onSubmit={submitForm}>
+                    <TextField value={form.name} name="name" onChange={handleChange} required label="Shop Name" size="small" margin="dense" inputProps={{size:"40"}}/>
+                    <br/>
+                    <TextField value={form.registrationNumber} name="registrationNumber" onChange={handleChange} required label="Registration Number" size="small" type="number" margin="dense" inputProps={{size:"20",maxLength:9}}/>
+                    <br/>
+                    <TextField value={form.streetName} name="streetName" onChange={handleChange} label="Street Name" size="small" margin="dense" inputProps={{size:"16"}}/>
+                    &nbsp;&nbsp;
+                    <TextField value={form.city} name="city" onChange={handleChange} label="City" size="small" margin="dense" inputProps={{size:"15"}}/>                
+                    <br/>
+                    <TextField value={form.province} name="province" onChange={handleChange} label="Province" size="small" margin="dense" inputProps={{size:"16"}}/>
+                    &nbsp;&nbsp;    
+                    <TextField value={form.zip} name="zip" onChange={handleChange} label="Zip code" size="small" margin="dense" inputProps={{size:"15"}}/>                
+                    <br/>
+                    <Button variant="contained" size="small" component="label" sx={{marginTop:"10px"}} startIcon={<PhotoCamera/>}>
+                        Upload
+                        <input hidden accept="image/*" multiple type="file" name="imgLoc" onChange={handleChange}/>
+                    </Button>
+                    <br/>
+                    <LoadingButton loading={loading}  variant="contained" size="small" type="submit" sx={{marginTop:"10px"}} >Register</LoadingButton>
+                    <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 
+                </form>
             </Paper>
         </Container>
     );

@@ -1,17 +1,26 @@
-import { PhotoCamera } from "@mui/icons-material";
+import { CheckBox, PhotoCamera } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { Button, Paper, TextField } from "@mui/material";
+import { Button, Checkbox, FormControl, FormControlLabel, Paper, TextField } from "@mui/material";
 import { Container } from "@mui/system";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
 
-function AddProduct(){
+function EditProduct(){
 
-    const [form,setForm] = useState({productName:"",storeId:0,description:"",price:1.0,imgLoc:""});
+    const location = useLocation();
+    const [form,setForm] = useState({
+        productId: location.state.productId,
+        productName: location.state.productName,
+        storeId:location.state.storeId,
+        description:location.state.description,
+        price:location.state.price,
+        active:location.state.active,
+        imgLoc:location.state.imgLoc
+    });
     const [errorMessage,setErrorMessage] = useState("");
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
@@ -28,16 +37,9 @@ function AddProduct(){
         e.preventDefault();
         setErrorMessage("");
         setLoading(true);
-        if(Auth.getJWT()){
-            let storeId = JSON.parse(atob(Auth.getJWT().split(".")[1])).Store;
-            setForm({...form, storeId:parseInt(storeId)});
-        }else{
-            console.log("token not found");
-            return;
-        }
         try{
-            let response = await axios.post(
-                Path.storeService + "/Product",
+            let response = await axios.put(
+                Path.storeService + "/Product/" + form.productId,
                 form,{
                     headers:{
                         'Authorization': `Bearer ${Auth.getJWT()}`
@@ -55,20 +57,22 @@ function AddProduct(){
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>               
-            <h2 style={{textAlign:"center"}}>Add Product</h2>
+            <h2 style={{textAlign:"center"}}>Edit Product</h2>
                 <form onSubmit={SubmitForm}>
                 <TextField value={form.productName} required label="Name" name="productName" onChange={handleChange} size="small" margin="dense" inputProps={{size:"40"}}/>
                 <br/>
                 <TextField value={form.description} required label="Description" name="description" onChange={handleChange} size="small" margin="dense" inputProps={{size:"40",maxLength:100}}/>
                 <br/>
                 <TextField value={form.price} required label="Price" type="number" name="price" onChange={handleChange} size="small" margin="dense" inputProps={{size:"10"}}/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <FormControlLabel sx={{marginTop:"4px"}} control={<Checkbox name="active" checked={form.active} onChange={(e)=>setForm({...form,active: e.target.checked})} />} label="active"/>
                 <br/>
                 <Button sx={{margin:"10px"}} variant="contained" size="small" component="label" startIcon={<PhotoCamera />}>
                     Upload
                     <input hidden accept="image/*" name="imgLoc" multiple type="file" />
                 </Button>
                 <br/>
-                <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{margin:"10px"}}>Add</LoadingButton>
+                <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{margin:"10px"}}>Save</LoadingButton>
                 <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 
             </form>
             </Paper>
@@ -76,4 +80,4 @@ function AddProduct(){
     );
 }
 
-export {AddProduct};
+export {EditProduct};

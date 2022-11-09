@@ -10,12 +10,15 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { RectangularCard, RestaurantHeader } from "../util/UIComponent";
 import { ErrorMessage } from "../util/errorMessage";
+import { AddToCart } from "../util/AddToCart";
 
 
 function Restaurant(props){
     let params = useParams();
     const [store,setStore] = useState({});
     const [failed, setFailed] = useState(false);
+    const [isCartOpen, setCartOpen] = useState(false);
+    const [cartProduct,setCartProduct] = useState({});
 
     useEffect(() => {getStore()},[]);
 
@@ -30,11 +33,20 @@ function Restaurant(props){
             setFailed(true);
         }
     }
+    function handleClose(){
+        setCartOpen(false);
+    }
+
+    function openCart(product){
+        setCartProduct(product);
+        setCartOpen(true);
+    }
+
     function displayProduct(p){
-        let body = <span>{p.description} <br/><i><b>${p.price}</b></i> </span>;
+        let body = <span style={{wordBreak:"break-word"}}>{p.description} <br/><i><b>${p.price}</b></i> </span>;
         return (
-            <RectangularCard header={p.productName} body={body}>
-                <FavoriteIcon /> Rating
+            <RectangularCard key={p.productId} header={p.productName} body={body} onClick={(e)=>{openCart(p)}}>
+                <FavoriteIcon />
             </RectangularCard>
         );        
     }
@@ -60,10 +72,10 @@ function Restaurant(props){
             </h2>
         );
     }
-
     return (
         <div>
             {failed ? displayError() : dispalyRestaurant()}
+            <AddToCart  product={cartProduct} open={isCartOpen} handleClose={handleClose}/>
         </div>
     );
     

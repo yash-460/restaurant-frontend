@@ -1,4 +1,4 @@
-import { Button, Icon, IconButton } from "@mui/material";
+import { Button, Dialog, DialogTitle, Icon, IconButton } from "@mui/material";
 import { Container } from "@mui/system";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -40,11 +40,10 @@ function RestaurantHome(){
     }
 
     function displayProduct(p){
-        let body = <span>{p.description} <br/><i><b>${p.price}</b></i> </span>;
+        let body = <span style={{wordBreak:"break-word"}}>{p.description} <br/><i><b>${p.price}</b></i> </span>;
         return (
-            <RectangularCard header={p.productName} body={body}>
-                <IconButton ><EditIcon/></IconButton>
-                <IconButton ><DeleteIcon/></IconButton>
+            <RectangularCard key={p.productId} header={p.productName} body={body}>
+                <Link style={{textDecoration:"none"}} to={"product"} state={p}><IconButton ><EditIcon/></IconButton></Link>
             </RectangularCard>
         );        
     }
@@ -62,9 +61,9 @@ function RestaurantHome(){
             <Container style={{marginTop:"20px"}}>
                 <RestaurantHeader header={<div style={{display:"flex",justifyContent: "center"}}>{store.name}</div>}>
                     <div style={{display:"flex",justifyContent:"space-evenly"}}>
-                        <Link style={{textDecoration:"none"}} to={"Edit"}><Button variant="outlined">Edit</Button></Link>
+                        <Link style={{textDecoration:"none"}} to={"Edit"} state={store}><Button variant="outlined">Edit</Button></Link>
                         <Link style={{textDecoration:"none"}} to={"Report" + 1}><Button variant="outlined">Report</Button></Link>
-                        <Link style={{textDecoration:"none"}} to={"Add" + 1}><Button variant="outlined">Add Product</Button></Link>
+                        <Link style={{textDecoration:"none"}} to={"Add"}><Button variant="outlined">Add Product</Button></Link>
                     </div>
                 </RestaurantHeader>
                 {store.products?.$values.map((p) =>  displayProduct(p))}

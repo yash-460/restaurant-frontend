@@ -1,21 +1,18 @@
-import { Button, CardActions, Paper } from "@mui/material";
+import { Button, ButtonBase, Card, CardActionArea, CardActions, CardContent, CardMedia, Paper, Typography } from "@mui/material";
 import { Container } from "@mui/system";
-import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material";
 import img from "../img/img.png";
-
 
 
 export function RectangularCard(props){
     return (<Container sx={{margin:"25px"}}>
-            <Paper sx={{display:"flex",backgroundColor:"rgb(251 251 251)",margin:"auto",padding:"15px",maxWidth:"700px",borderRadius:"10px"}}>
-
-                <div style={{display:"inline-block"}}>
+            <Paper sx={{display:"flex",backgroundColor:"rgb(251 251 251)",margin:"auto",padding:"15px",maxWidth:"700px",borderRadius:"10px"}}>              
+                <div style={{display:"inline-block",width:"100%"}} onClick={props.onClick}>
                     <b>{props.header}</b><br/>
                     {props.body}
                 </div>
-                <div style={{alignSelf:"center",marginLeft:"auto"}}>
+                <div style={{alignSelf:"center",marginLeft:"auto",padding:"0 5px 0 10px"}}>
                     {props.children}
-                </div>
+                </div>                
             </Paper>
     </Container>);
 }
