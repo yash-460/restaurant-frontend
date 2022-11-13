@@ -24,14 +24,27 @@ function EditProduct(){
     const [errorMessage,setErrorMessage] = useState("");
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
+    const [uploadFileName,setUploadFileName] = useState();
+
 
     function handleChange(e){
         const { name, value } = e.target;
-        if(name == "price")
+        if(name === "price"){
             setForm({...form, [name] :parseFloat(value)});
-        else
+        }else if (name === "imgLoc"){
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setForm({...form, [name] : btoa(e.target.result)});
+            };
+            if(e.target.files !== null){
+                reader.readAsBinaryString(e.target.files[0]);
+                setUploadFileName(e.target.files[0].name);
+            }
+        }else{
             setForm({...form, [name] :value});
+        }
     }
+    
 
     async function SubmitForm(e){
         e.preventDefault();
@@ -69,8 +82,9 @@ function EditProduct(){
                 <br/>
                 <Button sx={{margin:"10px"}} variant="contained" size="small" component="label" startIcon={<PhotoCamera />}>
                     Upload
-                    <input hidden accept="image/*" name="imgLoc" multiple type="file" />
+                    <input hidden accept="image/*" name="imgLoc" onChange={handleChange} type="file" />
                 </Button>
+                <span> {uploadFileName}</span>
                 <br/>
                 <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{margin:"10px"}}>Save</LoadingButton>
                 <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 

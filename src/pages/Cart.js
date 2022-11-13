@@ -54,6 +54,7 @@ export function Cart(){
         
         return (
             <RectangularCard key={item.product.productId} header={item.product.productName} body={body}>
+                <span style={{margin:"auto",display:"flex",fontSize:"x-large"}}>&#215; <span>{item.quantity}</span></span>&nbsp;&nbsp;
                 <IconButton onClick={()=>{
                     setDialogOpen(true);
                     setRemoveProductId(item.product.productId);
@@ -82,6 +83,15 @@ export function Cart(){
         setBtnLoading(false);
     }
 
+    function displayBill(){
+        
+        return (
+            <div style={{margin:"auto"}}>
+                
+            </div>
+        );
+    }
+
     return (
         <div>
             {failed ? <h1 style={{textAlign:"center"}}>{ErrorMessage.contactSupport}</h1> : (
@@ -89,7 +99,8 @@ export function Cart(){
                     <h1 style={{textAlign:"center"}}>Checkout</h1>
                     {loading ? Array(4).fill(null).map((u,i)=> dispalySkeleton(i)) : (
                         cart.length ? ( cart.map((item) => displayProduct(item))) : <h2>Nothing inside cart </h2>
-                    )}
+                    )}          
+                    {cart.length ? displayBill() : ""}
                     <Dialog open={dialogOpen} onClose={()=>setDialogOpen(false)}>
                         <DialogTitle>Sure you want Remove product from Cart?</DialogTitle>
                         <DialogActions>

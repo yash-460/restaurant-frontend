@@ -59,7 +59,7 @@ function RestaurantHome(){
     function dispalyRestaurant(){
         return(
             <Container style={{marginTop:"20px"}}>
-                <RestaurantHeader header={<div style={{display:"flex",justifyContent: "center"}}>{store.name}</div>}>
+                <RestaurantHeader header={<div style={{display:"flex",justifyContent: "center"}}>{store.name}</div>} image={store.imgLoc}>
                     <div style={{display:"flex",justifyContent:"space-evenly"}}>
                         <Link style={{textDecoration:"none"}} to={"Edit"} state={store}><Button variant="outlined">Edit</Button></Link>
                         <Link style={{textDecoration:"none"}} to={"Report" + 1}><Button variant="outlined">Report</Button></Link>

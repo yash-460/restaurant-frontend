@@ -49,9 +49,9 @@ export function AddToCart(props){
     }
     return (
         <div>
-            <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center"}} maxWidth="xs">
+            <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center"}} maxWidth="s">
                 <DialogTitle>
-                    <CardMedia component="img" sx={{maxWidth:"250px",margin:"auto"}} image={props.product.imgLoc ? props.product.imgLoc : img}/>   
+                    <CardMedia component="img" sx={{margin:"auto"}} height="170" image={props.product.imgLoc ? ("data:image/*;base64, " + props.product.imgLoc) : img}/>   
                 </DialogTitle>
                 <DialogContent>
                     <b>{props.product.productName}</b><br/>

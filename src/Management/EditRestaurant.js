@@ -25,6 +25,7 @@ function EditRestaurant(){
     const [loading,setLoading] = useState(false);
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
+    const [uploadFileName,setUploadFileName] = useState();
     
     async function submitForm(e){
         e.preventDefault();
@@ -50,12 +51,14 @@ function EditRestaurant(){
     function handleChange(e){
         const { name, value } = e.target;
         if(name === "imgLoc"){
-            console.log(e.target.files[0]);
             const reader = new FileReader();
             reader.onload = (e) => {
-                setForm({...form, [name] : e.target.result});
+                setForm({...form, [name] : btoa(e.target.result)});
             };
-            reader.readAsDataURL(e.target.files[0]);           
+            if(e.target.files !== null){
+                reader.readAsBinaryString(e.target.files[0]);
+                setUploadFileName(e.target.files[0].name);
+            }
         }else{
             setForm({...form, [name] :value});
         }
@@ -82,6 +85,7 @@ function EditRestaurant(){
                         Upload
                         <input hidden accept="image/*" multiple type="file" name="imgLoc" onChange={handleChange}/>
                     </Button>
+                    <span> {uploadFileName}</span>
                     <br/>
                     <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{marginTop:"10px"}} >Save</LoadingButton>
                     <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 

@@ -36,10 +36,14 @@ function Home(){
         navigate(`/Store/${id}`);
     }
     function displayStore(data){
+        let image = img
+        if(data.imgLoc !== null && data.imgLoc.length != 0){
+            image = "data:image/*;base64, "+ data.imgLoc;
+        }
         return (
         <Card key={data.storeId} sx={cardOverrideStyle} onClick={() => goToStoreDetail(data.storeId)}>
             <CardActionArea>
-                <CardMedia component="img" height="170" image={img}/>
+                <CardMedia component="img" height="170" image={image}/>
                 <CardContent>
                     <Typography variant="h6" component="div">
                         {data.name}

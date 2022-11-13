@@ -21,7 +21,7 @@ function Nav(){
                             <IconButton><ShoppingCartIcon style={iconStyle} /></IconButton>
                             </Tooltip>
                         </Link>
-                        <Link to="/Favorite">
+                        <Link to="/Favourite">
                             <Tooltip title="Favourite">
                             <IconButton><BookmarksIcon style={iconStyle}/></IconButton>
                             </Tooltip>

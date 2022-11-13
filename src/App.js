@@ -7,6 +7,7 @@ import RestaurantHome from './Management/Home';
 import { RegisterRestaurant } from './Management/RegisterRestaurant';
 import Nav from './Nav';
 import { Cart } from './pages/Cart';
+import { FavouritePage } from './pages/Favourite';
 import Home from './pages/Home';
 import { Login, Signin } from './pages/Login';
 import Restaurant from './pages/Restaurant';
@@ -29,6 +30,12 @@ function App() {
           <Route path="/Cart" element={
             <RequireLogin>
               <Cart/>
+            </RequireLogin>
+          }/>
+
+          <Route path="/favourite" element={
+            <RequireLogin>
+              <FavouritePage/>
             </RequireLogin>
           }/>
 
