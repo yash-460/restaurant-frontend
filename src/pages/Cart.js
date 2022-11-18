@@ -102,7 +102,7 @@ export function Cart(){
         return (
             <div style={{padding:"25px",margin:"auto",maxWidth:"fit-content"}}>
                 <div style={{margin:"auto",maxWidth:"fit-content"}}>
-                <p><b>Amount:</b> {totalAmount}</p>
+                <p><b>Amount:</b> {totalAmount.toFixed(2)}</p>
                 <p><b>Tax:</b> {tax}</p>
                 <p><b>Total:</b> {((tax * totalAmount)/100 + totalAmount).toFixed(2)}</p>
                 </div>
@@ -135,7 +135,7 @@ export function Cart(){
                     {loading ? Array(4).fill(null).map((u,i)=> dispalySkeleton(i)) : (
                         cart.length ? ( cart.map((item) => displayProduct(item))) : <h2 style={{textAlign:"center"}}>Nothing inside cart </h2>
                     )}          
-                    {tax !== null ? displayBill() : ""}
+                    {tax !== null && cart.length ? displayBill() : ""}
                     <Dialog open={dialogOpen} onClose={()=>setDialogOpen(false)}>
                         <DialogTitle>Sure you want Remove product from Cart?</DialogTitle>
                         <DialogActions>

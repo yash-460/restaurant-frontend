@@ -6,8 +6,9 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import RoomServiceIcon from '@mui/icons-material/RoomService';
 
-function Nav(){
+export function CustomerNav(){
     const iconStyle = {color:"black"};
     return (
         <Box>
@@ -42,4 +43,27 @@ function Nav(){
     );
 }
 
-export default Nav;
+export function OwnerNav(){
+    const iconStyle = {color:"black"};
+    return(
+        <Box>
+            <Paper sx={{display:"flex", padding:" 12px 18px"}} square>
+                <div>
+                    <Link to="/Management" >LOGO</Link>
+                </div>
+                <div style={{marginLeft:"auto"}}>                                                       
+                        <Link to="Management/Orders">
+                            <Tooltip title="Live Orders">
+                            <IconButton><RoomServiceIcon style={iconStyle}/></IconButton>
+                            </Tooltip>
+                        </Link>
+                        <Link to="Management/Profile">
+                            <Tooltip title="Profile">
+                            <IconButton><AccountCircleIcon style={iconStyle}/></IconButton>
+                            </Tooltip>
+                        </Link>                                 
+                </div>
+            </Paper>
+        </Box>
+    );
+}
