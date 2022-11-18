@@ -56,7 +56,7 @@ function Login(props){
                     <br/>
                     <TextField required label="Password" name="password" size="small"  margin="dense" inputProps={{size:"40",minLength:8}} type="password" value={form.password} onChange={handleChange}/>
                     <br/>
-                    <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 
+                    <span style={{color:"red",fontSize:"10pt"}}>{errorMessage}</span> 
                     <br/>
                     <LoadingButton loading={loading} variant="contained" size="small" sx={{marginTop:"10px"}}  type="submit" >Log in</LoadingButton>               
                     <br/>
@@ -111,7 +111,7 @@ function Signin(){
                     <br/>
                     <TextField required label="email" size="small" margin="dense" value={form.email} onChange={handleChange} inputProps={{size:"40",maxLength:40}} type="email"/>
                     <br/>
-                    <TextField label="Phone Number" size="small" margin="dense" value={form.phoneNumber} onChange={handleChange} inputProps={{size:"40",maxLength:10}} type="tel"/>
+                    <TextField label="Phone Number" size="small" margin="dense" value={form.phoneNumber} onChange={handleChange} inputProps={{size:"40",max:9999999999}} type="tel"/>
                     <br/>
                     <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 
                     <br/>

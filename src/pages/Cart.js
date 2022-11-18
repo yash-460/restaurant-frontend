@@ -1,4 +1,4 @@
-import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Skeleton } from "@mui/material";
+import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Skeleton, TextareaAutosize } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { RectangularCard } from "../util/UIComponent";
@@ -16,6 +16,7 @@ export function Cart(){
     const [dialogOpen,setDialogOpen] = useState(false);
     const [removeProductId, setRemoveProductId] = useState(0);
     const [btnLoading,setBtnLoading] = useState(false);
+    const [tax,setTax] = useState(null);
 
     useEffect(()=>{
         fetchCart();
@@ -30,8 +31,18 @@ export function Cart(){
                     }
                 }
             );
-            console.log(response);
             setCart(response.data?.$values);
+            
+            if(response.data?.$values.length){
+                try{
+                    let taxResponse = await axios.get(`${Path.storeService}/Store/tax/${response.data?.$values[0].product.storeId}`);
+                    setTax(taxResponse.data);
+                }catch(error){
+                    console.log("error fetching tax rate");
+                    console.log(error);
+                }
+               
+            }
         }catch(error){
             console.log(error);
             setFailed(true);    
@@ -84,12 +95,36 @@ export function Cart(){
     }
 
     function displayBill(){
-        
+        let totalAmount = 0;
+        for(let i = 0; i < cart.length;i++){
+            totalAmount += cart[i].product.price * cart[i].quantity;
+        }
         return (
-            <div style={{margin:"auto"}}>
-                
+            <div style={{padding:"25px",margin:"auto",maxWidth:"fit-content"}}>
+                <div style={{margin:"auto",maxWidth:"fit-content"}}>
+                <p><b>Amount:</b> {totalAmount}</p>
+                <p><b>Tax:</b> {tax}</p>
+                <p><b>Total:</b> {((tax * totalAmount)/100 + totalAmount).toFixed(2)}</p>
+                </div>
+                <Button variant="contained" onClick={Pay} >Proceed to Pay</Button>
             </div>
         );
+    }
+
+    async function Pay(){
+        try{
+            let response = await axios.post(
+                Path.OrderService + "/Orders",
+                {},{
+                headers:{
+                    'Authorization': `Bearer ${Auth.getJWT()}`
+                }
+            });
+            console.log("done");
+        }catch(error){
+            console.log(error);
+        }
+        
     }
 
     return (
@@ -98,9 +133,9 @@ export function Cart(){
                 <Container style={{marginTop:"30px"}}>
                     <h1 style={{textAlign:"center"}}>Checkout</h1>
                     {loading ? Array(4).fill(null).map((u,i)=> dispalySkeleton(i)) : (
-                        cart.length ? ( cart.map((item) => displayProduct(item))) : <h2>Nothing inside cart </h2>
+                        cart.length ? ( cart.map((item) => displayProduct(item))) : <h2 style={{textAlign:"center"}}>Nothing inside cart </h2>
                     )}          
-                    {cart.length ? displayBill() : ""}
+                    {tax !== null ? displayBill() : ""}
                     <Dialog open={dialogOpen} onClose={()=>setDialogOpen(false)}>
                         <DialogTitle>Sure you want Remove product from Cart?</DialogTitle>
                         <DialogActions>

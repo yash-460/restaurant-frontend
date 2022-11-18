@@ -56,9 +56,9 @@ function Home(){
         </Card>);
     }
 
-    function displaySkeleton(){      
+    function displaySkeleton(i){      
         return(
-            <div style={cardOverrideStyle}>
+            <div style={cardOverrideStyle} key={i}>
                 <Skeleton variant="rectangular" width={210} height={118}/>
                 <Skeleton width={210}/>
                 <Skeleton width="60%"/>
@@ -74,7 +74,7 @@ function Home(){
 
     return (
        <Container sx={{ marginTop:"30px"}}>
-          {failed ? showError() : (stores.length === 0 ?  displaySkeleton() : stores.map((store) => displayStore(store)))}
+          {failed ? showError() : (stores.length === 0 ?  Array(6).fill(null).map((u,i)=> displaySkeleton(i)) : stores.map((store) => displayStore(store)))}
        </Container>
     );
 };

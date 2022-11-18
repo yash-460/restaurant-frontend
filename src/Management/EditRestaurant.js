@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
+import { UploadButton } from "../util/UIComponent";
 
 function EditRestaurant(){
 
@@ -25,7 +26,6 @@ function EditRestaurant(){
     const [loading,setLoading] = useState(false);
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
-    const [uploadFileName,setUploadFileName] = useState();
     
     async function submitForm(e){
         e.preventDefault();
@@ -50,18 +50,7 @@ function EditRestaurant(){
 
     function handleChange(e){
         const { name, value } = e.target;
-        if(name === "imgLoc"){
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setForm({...form, [name] : btoa(e.target.result)});
-            };
-            if(e.target.files !== null){
-                reader.readAsBinaryString(e.target.files[0]);
-                setUploadFileName(e.target.files[0].name);
-            }
-        }else{
-            setForm({...form, [name] :value});
-        }
+        setForm({...form, [name] :value});
     }
 
     return (
@@ -81,11 +70,7 @@ function EditRestaurant(){
                     &nbsp;&nbsp;    
                     <TextField value={form.zip} name="zip" onChange={handleChange} label="Zip code" size="small" margin="dense" inputProps={{size:"15"}}/>                
                     <br/>
-                    <Button variant="contained" size="small" component="label" sx={{marginTop:"10px"}} startIcon={<PhotoCamera/>}>
-                        Upload
-                        <input hidden accept="image/*" multiple type="file" name="imgLoc" onChange={handleChange}/>
-                    </Button>
-                    <span> {uploadFileName}</span>
+                    <UploadButton handleUpload={(content)=> setForm({...form,imgLoc:content})} removeUpload={()=>setForm({...form,imgLoc:""})}/>
                     <br/>
                     <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{marginTop:"10px"}} >Save</LoadingButton>
                     <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 

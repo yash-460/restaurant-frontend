@@ -42,7 +42,7 @@ function RestaurantHome(){
     function displayProduct(p){
         let body = <span style={{wordBreak:"break-word"}}>{p.description} <br/><i><b>${p.price}</b></i> </span>;
         return (
-            <RectangularCard key={p.productId} header={p.productName} body={body}>
+            <RectangularCard key={p.productId} header={p.productName} body={body} sx={{marginTop:"5px"}}>
                 <Link style={{textDecoration:"none"}} to={"product"} state={p}><IconButton ><EditIcon/></IconButton></Link>
             </RectangularCard>
         );        
@@ -62,7 +62,7 @@ function RestaurantHome(){
                 <RestaurantHeader header={<div style={{display:"flex",justifyContent: "center"}}>{store.name}</div>} image={store.imgLoc}>
                     <div style={{display:"flex",justifyContent:"space-evenly"}}>
                         <Link style={{textDecoration:"none"}} to={"Edit"} state={store}><Button variant="outlined">Edit</Button></Link>
-                        <Link style={{textDecoration:"none"}} to={"Report" + 1}><Button variant="outlined">Report</Button></Link>
+                        <Link style={{textDecoration:"none"}} to={"Report"}><Button variant="outlined">Report</Button></Link>
                         <Link style={{textDecoration:"none"}} to={"Add"}><Button variant="outlined">Add Product</Button></Link>
                     </div>
                 </RestaurantHeader>

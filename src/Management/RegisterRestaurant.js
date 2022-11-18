@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
+import { UploadButton } from "../util/UIComponent";
 
 function RegisterRestaurant(){
 
@@ -15,8 +16,6 @@ function RegisterRestaurant(){
     const [loading,setLoading] = useState(false);
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
-    const [uploadFileName,setUploadFileName] = useState();
-
 
     async function submitForm(e){
         e.preventDefault();
@@ -47,18 +46,7 @@ function RegisterRestaurant(){
 
     function handleChange(e){
         const { name, value } = e.target;
-        if(name === "imgLoc"){
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setForm({...form, [name] : btoa(e.target.result)});
-            };
-            if(e.target.files !== null){
-                reader.readAsBinaryString(e.target.files[0]);
-                setUploadFileName(e.target.files[0].name);
-            }           
-        }else{
-            setForm({...form, [name] :value});
-        }
+        setForm({...form, [name] :value});        
     }
 
     return (
@@ -78,11 +66,7 @@ function RegisterRestaurant(){
                     &nbsp;&nbsp;    
                     <TextField value={form.zip} name="zip" onChange={handleChange} label="Zip code" size="small" margin="dense" inputProps={{size:"15"}}/>                
                     <br/>
-                    <Button variant="contained" size="small" component="label" sx={{marginTop:"10px"}} startIcon={<PhotoCamera/>}>
-                        Upload
-                        <input hidden accept="image/*" multiple type="file" name="imgLoc" onChange={handleChange}/>
-                    </Button>
-                    <span> {uploadFileName}</span>
+                    <UploadButton handleUpload={(content)=> setForm({...form,imgLoc:content})} removeUpload={()=>setForm({...form,imgLoc:""})}/>
                     <br/>
                     <LoadingButton loading={loading}  variant="contained" size="small" type="submit" sx={{marginTop:"10px"}} >Register</LoadingButton>
                     <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 

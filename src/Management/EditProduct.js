@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
+import { UploadButton } from "../util/UIComponent";
 
 function EditProduct(){
 
@@ -24,22 +25,12 @@ function EditProduct(){
     const [errorMessage,setErrorMessage] = useState("");
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
-    const [uploadFileName,setUploadFileName] = useState();
 
 
     function handleChange(e){
         const { name, value } = e.target;
         if(name === "price"){
             setForm({...form, [name] :parseFloat(value)});
-        }else if (name === "imgLoc"){
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setForm({...form, [name] : btoa(e.target.result)});
-            };
-            if(e.target.files !== null){
-                reader.readAsBinaryString(e.target.files[0]);
-                setUploadFileName(e.target.files[0].name);
-            }
         }else{
             setForm({...form, [name] :value});
         }
@@ -80,11 +71,7 @@ function EditProduct(){
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <FormControlLabel sx={{marginTop:"4px"}} control={<Checkbox name="active" checked={form.active} onChange={(e)=>setForm({...form,active: e.target.checked})} />} label="active"/>
                 <br/>
-                <Button sx={{margin:"10px"}} variant="contained" size="small" component="label" startIcon={<PhotoCamera />}>
-                    Upload
-                    <input hidden accept="image/*" name="imgLoc" onChange={handleChange} type="file" />
-                </Button>
-                <span> {uploadFileName}</span>
+                <UploadButton handleUpload={(content)=> setForm({...form,imgLoc:content})} removeUpload={()=>setForm({...form,imgLoc:""})}/>
                 <br/>
                 <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{margin:"10px"}}>Save</LoadingButton>
                 <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 

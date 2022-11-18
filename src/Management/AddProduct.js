@@ -1,4 +1,4 @@
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCamera, Upload } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Button, Paper, TextField } from "@mui/material";
 import { Container } from "@mui/system";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
+import { UploadButton } from "../util/UIComponent";
 
 function AddProduct(){
 
@@ -15,21 +16,11 @@ function AddProduct(){
     const [errorMessage,setErrorMessage] = useState("");
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
-    const [uploadFileName,setUploadFileName] = useState();
 
     function handleChange(e){
         const { name, value } = e.target;
         if(name === "price"){
             setForm({...form, [name] :parseFloat(value)});
-        }else if (name === "imgLoc"){
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setForm({...form, [name] : btoa(e.target.result)});
-            };
-            if(e.target.files !== null){
-                reader.readAsBinaryString(e.target.files[0]);
-                setUploadFileName(e.target.files[0].name);
-            }
         }else{
             setForm({...form, [name] :value});
         }
@@ -74,11 +65,7 @@ function AddProduct(){
                 <br/>
                 <TextField value={form.price} required label="Price" type="number" name="price" onChange={handleChange} size="small" margin="dense" inputProps={{size:"10"}}/>
                 <br/>
-                <Button sx={{margin:"10px"}} variant="contained" size="small" component="label" startIcon={<PhotoCamera />}>
-                    Upload
-                    <input hidden accept="image/*" name="imgLoc" multiple type="file" />
-                </Button>
-                <span> {uploadFileName}</span>
+                <UploadButton handleUpload={(content)=> setForm({...form,imgLoc:content})} removeUpload={()=>setForm({...form,imgLoc:""})}/>
                 <br/>
                 <LoadingButton loading={loading} type="submit" variant="contained" size="small" sx={{margin:"10px"}}>Add</LoadingButton>
                 <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 

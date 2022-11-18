@@ -4,12 +4,15 @@ import { AddProduct } from './Management/AddProduct';
 import { EditProduct } from './Management/EditProduct';
 import { EditRestaurant } from './Management/EditRestaurant';
 import RestaurantHome from './Management/Home';
+import { LiveOrder } from './Management/LiveOrder';
 import { RegisterRestaurant } from './Management/RegisterRestaurant';
+import { Report } from './Management/Report';
 import Nav from './Nav';
 import { Cart } from './pages/Cart';
 import { FavouritePage } from './pages/Favourite';
 import Home from './pages/Home';
 import { Login, Signin } from './pages/Login';
+import { Order } from './pages/Order';
 import Restaurant from './pages/Restaurant';
 import { UserProfile } from './pages/UserProfile';
 import {RequireLogin} from './util/auth';
@@ -30,6 +33,12 @@ function App() {
           <Route path="/Cart" element={
             <RequireLogin>
               <Cart/>
+            </RequireLogin>
+          }/>
+          
+          <Route path="/Orders" element={
+            <RequireLogin>
+              <Order/>
             </RequireLogin>
           }/>
 
@@ -68,6 +77,16 @@ function App() {
           <Route path="/Management/product" element={
             <RequireLogin>
               <EditProduct/>
+            </RequireLogin>
+          }/>
+          <Route path="/Management/Orders" element={
+            <RequireLogin>
+              <LiveOrder/>
+            </RequireLogin>
+          }/>
+          <Route path="/Management/Report" element={
+            <RequireLogin>
+              <Report/>
             </RequireLogin>
           }/>
         </Routes>

@@ -1,13 +1,12 @@
-import { Button, ButtonBase, Card, CardActionArea, CardActions, CardContent, CardMedia, Paper, Typography } from "@mui/material";
+import { PhotoCamera } from "@mui/icons-material";
+import { Alert, Button, ButtonBase, Card, CardActionArea, CardActions, CardContent, CardMedia, Chip, Paper, Snackbar, Typography } from "@mui/material";
 import { Container } from "@mui/system";
+import { useState } from "react";
 import img from "../img/img.png";
 
 
 export function RectangularCard(props){
-    return (<Container sx={{margin:"25px"}}>
-            <Paper elevation={3} sx={{display:"flex",backgroundColor:"rgb(251 251 251)",padding:"5px",margin:"auto",maxWidth:"fit-content",borderRadius:"10px 10px 0 0"}}>
-                <b>{props.topText}</b>
-            </Paper>
+    return (<Container sx={{margin:"auto",marginTop:"40px"}}>
             <Paper sx={{display:"flex",backgroundColor:"rgb(251 251 251)",margin:"auto",padding:"15px",maxWidth:"700px",borderRadius:"10px"}}>              
                 <div style={{display:"inline-block",width:"100%",cursor:props.onClick ? "pointer" : "default"}} onClick={props.onClick}>
                     <b>{props.header}</b><br/>
@@ -35,3 +34,53 @@ export function RestaurantHeader(props){
         </Card>
     );
 }
+
+
+export function UploadButton(props){
+    const [fileName,setFileName] = useState("");
+
+    function handleChange(e){
+        const reader = new FileReader();
+            reader.onload = (e) => {
+                props.handleUpload(btoa(e.target.result));
+        };
+        if(e.target.files !== null){
+            reader.readAsBinaryString(e.target.files[0]);
+            setFileName(e.target.files[0].name);
+        }
+    }
+
+    function removeFile(){
+        setFileName("");
+        props.removeUpload();
+    }
+
+    return(
+        <div>
+            <Button sx={{margin:"10px"}} variant="contained" size="small" component="label" startIcon={<PhotoCamera />}>
+                Upload
+                <input hidden accept="image/*" name="imgLoc" onChange={handleChange} type="file" />
+            </Button>
+            { fileName.length ? <Chip  label={fileName} variant="outlined" color="primary" onDelete={removeFile} /> : ""}
+        </div>
+    );
+}
+
+export default function SuccessSnackbars(props) {
+  
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      props.close();
+    };
+  
+    return (
+        <Snackbar open={props.open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            {props.message}
+          </Alert>
+        </Snackbar>
+    );
+  }

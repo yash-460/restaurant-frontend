@@ -3,6 +3,7 @@ import { LoadingButton } from "@mui/lab";
 import { Button, CardMedia, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import img from "../img/img.png";
 import { Auth } from "./auth";
 import { Path } from "./Constants";
@@ -16,13 +17,18 @@ export function AddToCart(props){
         quantity:1,
         instruction:""
     });
-    
+    const location = useLocation();
+    const navigate = useNavigate();
+
     function handleChange(e){
         const { name, value } = e.target;
         setForm({...form, [name] :value});
     }
     async function submitForm(e){
         e.preventDefault();
+        if(!Auth.getJWT()){
+            navigate(`/login?${location.pathname.replace('/','')}`);
+        }
         setLoading(true);
         setErrorMessage("");
         form.productId = props.product.productId;

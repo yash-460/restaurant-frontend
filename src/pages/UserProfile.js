@@ -66,11 +66,18 @@ function UserProfile(){
     }
 
     function showSkeleton(){
-        <div>
-            <Skeleton sx={{width:"40%"}}/>
-            <Skeleton sx={{width:"70%"}}/>
-            <Skeleton sx={{width:"20%"}}/>
-        </div>
+        return(
+            <div style={{width:"400px"}}>
+                <Skeleton sx={{width:"80%"}}/>
+                <Skeleton sx={{width:"70%"}}/>
+                <Skeleton sx={{width:"50%"}}/>
+                <br/><br/>
+                <Skeleton sx={{width:"80%"}}/>
+                <Skeleton sx={{width:"70%"}}/>
+                <Skeleton sx={{width:"50%"}}/>
+                <br/><br/>
+            </div>
+        );
     }
 
     async function updatePassword(e){
@@ -128,7 +135,7 @@ function UserProfile(){
                         <br/>
                         <TextField required label="email" name="email" value={form.email} onChange={handleChange} size="small" margin="dense" inputProps={{size:"40",readOnly:!editMode}} type="email"/>
                         <br/>
-                        <TextField label="Phone Number" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} size="small" margin="dense" inputProps={{size:"40",maxLenght:10,readOnly:!editMode}} type="number"/>
+                        <TextField label="Phone Number" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} size="small" margin="dense" inputProps={{size:"40",max:9999999999,readOnly:!editMode}} type="number"/>
                         <br/>
                         <span style={{color:"red",fontSize:"10pt"}}>{errorMessage}</span>
                         <span style={{color:"green",fontSize:"10pt",display:displaySuccess ? "inline-block" : "none"}}>Saved Successfully!</span> 
