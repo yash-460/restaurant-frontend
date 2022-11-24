@@ -7,7 +7,10 @@ import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { RectangularCard } from "../util/UIComponent";
 
-
+/**
+ * Monthly Report on the restaurant sales 
+ * @returns UI providing the functionality to query report
+ */
 export function Report(){
 
     const [report,setReport] = useState([]);
@@ -16,6 +19,7 @@ export function Report(){
     const [loading,setLoading] = useState(false);
     const [errorMessage,setErrorMessage] = useState("");
 
+    //fetch reports from rest api
     async function fetchReport(){
         setErrorMessage("");
         if(!startDate || !endDate){
@@ -44,6 +48,7 @@ export function Report(){
         setLoading(false);
     }
 
+    // display summary for specified product
     function displayInfobyProduct(product){
         let body= (
             <div>
@@ -65,6 +70,8 @@ export function Report(){
             totalTax += report[i].totalTax;
         }
     }
+
+    //renders the report
     return(
         <div>
             <Paper elevation={3} sx={{margin:"auto",marginTop:"20px", minWidth:"fit-content",padding:"20px", maxWidth:"800px"}}>

@@ -10,8 +10,13 @@ import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
 import { UploadButton } from "../util/UIComponent";
 
+/**
+ * this component contains logic and functionality to edit existing product
+ * @returns UI to add product
+ */
 function EditProduct(){
 
+    // Inital state
     const location = useLocation();
     const [form,setForm] = useState({
         productId: location.state.productId,
@@ -26,7 +31,7 @@ function EditProduct(){
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
 
-
+    // change state variable for form input
     function handleChange(e){
         const { name, value } = e.target;
         if(name === "price"){
@@ -36,7 +41,7 @@ function EditProduct(){
         }
     }
     
-
+    // send put request to edit the product
     async function SubmitForm(e){
         e.preventDefault();
         setErrorMessage("");
@@ -50,14 +55,14 @@ function EditProduct(){
                     }
                 }           
             );
-            navigate("/Management");
+            navigate("/Management"); // On success
         }catch (error){
             setLoading(false);
             setErrorMessage(ErrorMessage.contactSupport);
         }
     }
 
-
+    // render UI to edit product
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>               

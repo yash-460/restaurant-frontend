@@ -10,8 +10,14 @@ import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
 import { UploadButton } from "../util/UIComponent";
 
+/**
+ * this component contains functionality to edit restaurant details
+ * only restaurant owners have access
+ * @returns 
+ */
 function EditRestaurant(){
 
+    // Inital state
     const location = useLocation();
     const [form,setForm] = useState({
         storeId: location.state.storeId,
@@ -27,6 +33,7 @@ function EditRestaurant(){
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
     
+    // submits put to edit the restaurnat details
     async function submitForm(e){
         e.preventDefault();
         setErrorMessage("");
@@ -39,7 +46,7 @@ function EditRestaurant(){
                         'Authorization': `Bearer ${Auth.getJWT()}`
                     }
             });
-            navigate("/Management");
+            navigate("/Management");  // on success
         }catch (error){
             console.log(error);
             setLoading(false);
@@ -48,11 +55,13 @@ function EditRestaurant(){
 
     }
 
+    // handle form changes to maintain react state
     function handleChange(e){
         const { name, value } = e.target;
         setForm({...form, [name] :value});
     }
 
+    // UI to edit the restaturant
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>

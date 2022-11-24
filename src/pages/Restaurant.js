@@ -7,12 +7,13 @@ import { Path } from "../util/Constants";
 import axios from "axios";
 import { RectangularCard, RestaurantHeader } from "../util/UIComponent";
 import { ErrorMessage } from "../util/errorMessage";
-import { AddToCart } from "../util/AddToCart";
+import { CartDialog } from "../util/CartDialog";
 import {  FavoriteBorder,Favorite } from "@mui/icons-material";
 import { pink } from '@mui/material/colors';
 import { Auth } from "../util/auth";
 import { LoadingButton } from "@mui/lab";
 import { CustomFavourite } from "../util/CustomFavourite";
+import StarIcon from '@mui/icons-material/Star';
 
 
 
@@ -28,7 +29,7 @@ function Restaurant(props){
 
     async function getStore(){
         try{
-            let response = await  axios.get(Path.storeService + `/Store/${params.storeId}`);
+            let response = await  axios.get(Path.storeService + `/Store/${params.storeId}?active=true`);
             setStore(response.data);
 
             // Favourite fetching
@@ -72,6 +73,7 @@ function Restaurant(props){
         let body = <span style={{wordBreak:"break-word"}}>{p.description} <br/><i><b>${p.price}</b></i> </span>;
         return (
             <RectangularCard key={p.productId} header={p.productName} body={body} onClick={(e)=>{openCart(p)}}>
+                {p.rating} <span>&nbsp;</span><StarIcon sx={{verticalAlign:"middle",color:"#faaf00"}}/>
                 {Auth.getJWT() ? <CustomFavourite productId={p.productId} isFavourite={favourite.includes(p.productId)} removeFavourite={removeFavourtie} addFavourite={addFavourite} /> : ""}
             </RectangularCard>
         );        
@@ -95,7 +97,7 @@ function Restaurant(props){
     return (
         <div>
             {failed ? <h2>{ErrorMessage.contactSupport}</h2> : dispalyRestaurant()}
-            <AddToCart  product={cartProduct} open={isCartOpen} handleClose={handleClose}/>
+            <CartDialog  product={cartProduct} open={isCartOpen} handleClose={handleClose}/>
         </div>
     );
     

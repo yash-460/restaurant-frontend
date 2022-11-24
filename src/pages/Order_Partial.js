@@ -8,12 +8,14 @@ import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { RectangularCard } from "../util/UIComponent";
 import CloseIcon from '@mui/icons-material/Close';
-import { memo } from "react";
+import {ErrorMessage} from "../util/errorMessage";
+import { helper } from "../util/helper";
 
 export function RateOrder(props){
 
     const [orderDetails,setOrderDetails] = useState([]);
     const [btnLoading,setBtnLoading] = useState(false);
+    const [errorMessage,setErrorMessage] = useState('');
     
     useEffect(()=>{
         console.log("useEffect Called");
@@ -21,12 +23,21 @@ export function RateOrder(props){
             setOrderDetails(props.order?.orderDetails);
     },[props.order]);
 
-    function saveRating(){
+    async function saveRating(){
         setBtnLoading(true);
+        setErrorMessage("");
+        let ratings = {orderId: orderDetails.$values[0].orderId, ratings: []};
+        orderDetails.$values.forEach(detail =>{
+            ratings.ratings.push({
+                productId: detail.productId,
+                rating: detail.rating
+            });
+        });
+
         try{
-            let response = axios.put(
-                Path.OrderService + "/Order/Rate/" + props.orderId,
-                {},{
+            let response = await axios.put(
+                Path.OrderService + "/Orders/Rate",
+                ratings,{
                     headers:{
                         'Authorization': `Bearer ${Auth.getJWT()}`
                     }
@@ -35,6 +46,7 @@ export function RateOrder(props){
             props.handleClose();
         }catch(error){
             console.log(error);
+            setErrorMessage(ErrorMessage.contactSupport);
         }
         setBtnLoading(false);
     }
@@ -66,6 +78,7 @@ export function RateOrder(props){
             <DialogTitle style={{textAlign:"center",fontSize:"18pt"}}><b>Rating</b></DialogTitle>
                 <DialogContent>
                     {orderDetails.length !== 0 ? orderDetails.$values.map(od => DisplayProduct(od)) : "n  "}
+                    <span style={{color:"red",fontSize:"10pt"}}>{errorMessage}</span> 
                 </DialogContent>
                 <DialogActions>
                     <LoadingButton loading={btnLoading} onClick={saveRating}>Save</LoadingButton>
@@ -106,6 +119,11 @@ export function OrderDetail(props){
                     </DialogActions>
                 </DialogTitle>
                 <DialogContent style={{margin:"auto"}}>
+                    <span>
+                    <b>Transaction ID: </b> {props.order?.transactionId}
+                    <br/>
+                    <b>Ordered Date: </b> {helper.formatDate(new Date(props.order?.orderedTime))}
+                    </span>
                     {props.order?.orderDetails.$values.map(od => DisplayOrderDetail(od))}
                     <div style={{margin:"auto",maxWidth:"fit-content"}}>
                     <p><b>Amount:</b> {totalAmount.toFixed(2)}</p>

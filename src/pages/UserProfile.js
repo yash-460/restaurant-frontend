@@ -120,7 +120,6 @@ function UserProfile(){
         const { name, value } = e.target;
         setPasswordForm({...passwordForm, [name] :value});
     }
-
     return (
         <div>
             {failed ? <h1 style={{textAlign:"center"}}>{ErrorMessage.contactSupport}</h1> : (
@@ -159,8 +158,10 @@ function UserProfile(){
                             </div>
                             </form>
                         </Paper>
+                        <br/>
                     </div>)}
                 </Paper>
+                <br/><br/>
                 </Container>
             )}
         </div>

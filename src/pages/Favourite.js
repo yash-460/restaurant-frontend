@@ -6,9 +6,12 @@ import { Auth } from "../util/auth";
 import { display } from "@mui/system";
 import { RectangularCard } from "../util/UIComponent";
 import { CustomFavourite } from "../util/CustomFavourite";
-import { AddToCart } from "../util/AddToCart";
+import {  CartDialog } from "../util/CartDialog";
 import { Container, Paper, Skeleton } from "@mui/material";
+import { CustomPagination } from "../util/UIComponent";
 
+
+// Favourite product of the users
 export function FavouritePage(){
 
     const[favourite,setFavourite] = useState([]);
@@ -16,18 +19,20 @@ export function FavouritePage(){
     const [failed,setFailed] = useState(false);
     const [cartProduct,setCartProduct] = useState({});
     const [isCartOpen, setCartOpen] = useState(false);
+    const [totalPage,setTotalPage] = useState(0);
 
     useEffect(()=>{featchFavourite()},[]);
 
-    async function featchFavourite(){
+    async function featchFavourite(page){
         try{
-            let response = await axios.get(Path.storeService + "/favourite/product",{
+            let response = await axios.get(Path.storeService + "/favourite/product?pageSize=5&pageIndex=" + (page ? page : 1),{
                 headers:{
                     'Authorization': `Bearer ${Auth.getJWT()}`
                 }
             });
             console.log(response);
-            setFavourite(response.data.$values);
+            setTotalPage(response.data?.totalPages);
+            setFavourite(response.data?.items.$values);
         }catch(error){
             console.log(error);
             setFailed(true);
@@ -69,12 +74,13 @@ export function FavouritePage(){
             {failed ? <h2 style={{textAlign:"center"}}>{ErrorMessage.contactSupport}</h2> : (
                 <Container style={{marginTop:"30px"}}>
                     {loading ? Array(4).fill(null).map((u,i)=> dispalySkeleton(i)) : (
-                    favourite.length ? favourite.map(fav => displayProduct(fav.product)) : (
+                    favourite.length ? <CustomPagination TotalPage={totalPage} fetchData={featchFavourite}>{favourite.map(fav => displayProduct(fav.product))} <br/><br/></CustomPagination> : (
                     <h2 style={{textAlign:"center"}}>You don't have any favourite. Visit any restaurant and choose one</h2>
                     ))}
+                    <br/><br/>
                 </Container>
             )}
-            <AddToCart  product={cartProduct} open={isCartOpen} handleClose={handleClose}/>
+            <CartDialog  product={cartProduct} open={isCartOpen} handleClose={handleClose}/>
         </div>
     );
 }

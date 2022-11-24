@@ -8,6 +8,11 @@ import { Link, NavLink, useLocation, useNavigate, useSearchParams } from "react-
 import { Path } from "../util/Constants";
 import {ErrorMessage} from "../util/errorMessage";
 
+/**
+ * Login page
+ * @param {*} props 
+ * @returns 
+ */
 function Login(props){
     const [form,setForm] = useState({userName:"",password:""});
     const [loading,setLoading] = useState(false);
@@ -46,7 +51,7 @@ function Login(props){
         }                                  
     }
 
-
+    // Render login page
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",textAlign:"center",padding:"10px 50px", width:"max-content"}}>
@@ -67,6 +72,10 @@ function Login(props){
     );
 };
 
+/**
+ * Sign Up page
+ * @returns 
+ */
 function Signin(){
 
     const [form,setForm] = useState({userName:"",password:""});

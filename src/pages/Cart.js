@@ -1,4 +1,4 @@
-import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Skeleton, TextareaAutosize } from "@mui/material";
+import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Paper, Select, Skeleton, TextareaAutosize } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { RectangularCard } from "../util/UIComponent";
@@ -7,7 +7,15 @@ import { Auth } from "../util/auth";
 import { ErrorMessage } from "../util/errorMessage";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
+import { CartDialog } from "../util/CartDialog";
+import { Payment } from "../util/Payment";
 
+
+/**
+ * Render cart of the specified user
+ * @returns UI displaying the cart
+ */
 export function Cart(){
     
     const [cart,setCart] = useState([]);
@@ -17,6 +25,10 @@ export function Cart(){
     const [removeProductId, setRemoveProductId] = useState(0);
     const [btnLoading,setBtnLoading] = useState(false);
     const [tax,setTax] = useState(null);
+    const [displayPaymentDialog,setDisplayPaymentDialog] = useState(false);
+    const [cartPaymentItems,setCartPaymentItems] = useState([]);
+
+    const navigate = useNavigate();
 
     useEffect(()=>{
         fetchCart();
@@ -32,7 +44,6 @@ export function Cart(){
                 }
             );
             setCart(response.data?.$values);
-            
             if(response.data?.$values.length){
                 try{
                     let taxResponse = await axios.get(`${Path.storeService}/Store/tax/${response.data?.$values[0].product.storeId}`);
@@ -50,6 +61,25 @@ export function Cart(){
         setLoading(false);
     }
 
+    // for paypal payment processing
+    function createCartItems(){
+        let items = {total: 0,items:[]};
+        cart.forEach(item => {
+            let itemPrice = Math.round((item.product.price + ((tax * item.product.price)/100)) *100)/100;
+            items.items.push({
+                name: item.product.productName,
+                unit_amount: {
+                    currency_code: "CAD",
+                    value: itemPrice
+                },
+                quantity: item.quantity
+            });
+            items.total = items.total + (itemPrice * item.quantity);
+        });
+        items.total = Math.round(items.total*100)/100;
+        setCartPaymentItems(items);
+    }
+
     function dispalySkeleton(i){
         return(
             <Paper key={i} sx={{display:"flex",flexDirection:"column",backgroundColor:"rgb(251 251 251)",margin:"auto",padding:"15px",maxWidth:"700px",borderRadius:"10px",marginTop:"30px"}}>              
@@ -61,7 +91,7 @@ export function Cart(){
     }
 
     function displayProduct(item){
-        let body = <span style={{wordBreak:"break-word"}}>{item.product.description} <br/><i><b>${item.product.price}</b></i> </span>;
+        let body = <span style={{wordBreak:"break-word"}}><b><i>Instruction</i></b>: {item.instruction} <br/><i><b>${item.product.price}</b></i> </span>;
         
         return (
             <RectangularCard key={item.product.productId} header={item.product.productName} body={body}>
@@ -106,27 +136,38 @@ export function Cart(){
                 <p><b>Tax:</b> {tax}</p>
                 <p><b>Total:</b> {((tax * totalAmount)/100 + totalAmount).toFixed(2)}</p>
                 </div>
-                <Button variant="contained" onClick={Pay} >Proceed to Pay</Button>
+                <Button variant="contained" onClick={()=> {createCartItems();setDisplayPaymentDialog(true);}} >Proceed to Pay</Button>
             </div>
         );
     }
 
-    async function Pay(){
+    function displayDeleteDialog(){
+        return (
+            <Dialog open={dialogOpen} onClose={()=>setDialogOpen(false)}>
+                <DialogTitle>Sure you want Remove product from Cart?</DialogTitle>
+                <DialogActions>
+                    <LoadingButton loading={btnLoading} onClick={()=> removeItem()}>Yes</LoadingButton>
+                    <Button onClick={()=>setDialogOpen(false)}>No</Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+
+    async function CreateOrder(id){
         try{
             let response = await axios.post(
                 Path.OrderService + "/Orders",
-                {},{
+                {transactionId:id},{
                 headers:{
                     'Authorization': `Bearer ${Auth.getJWT()}`
                 }
             });
-            console.log("done");
+            navigate("/orders");
         }catch(error){
             console.log(error);
         }
         
     }
-
     return (
         <div>
             {failed ? <h1 style={{textAlign:"center"}}>{ErrorMessage.contactSupport}</h1> : (
@@ -136,13 +177,8 @@ export function Cart(){
                         cart.length ? ( cart.map((item) => displayProduct(item))) : <h2 style={{textAlign:"center"}}>Nothing inside cart </h2>
                     )}          
                     {tax !== null && cart.length ? displayBill() : ""}
-                    <Dialog open={dialogOpen} onClose={()=>setDialogOpen(false)}>
-                        <DialogTitle>Sure you want Remove product from Cart?</DialogTitle>
-                        <DialogActions>
-                            <LoadingButton loading={btnLoading} onClick={()=> removeItem()}>Yes</LoadingButton>
-                            <Button onClick={()=>setDialogOpen(false)}>No</Button>
-                        </DialogActions>
-                    </Dialog>
+                    {displayDeleteDialog()}
+                    {displayPaymentDialog ? <Payment CreateOrder={CreateOrder} open={displayPaymentDialog} items={cartPaymentItems} handleClose={()=> setDisplayPaymentDialog(false)}/>: ""}
                 </Container>
             )}
         </div>

@@ -20,6 +20,7 @@ import {RequireLogin} from './util/auth';
 function CustomerHeader(){
   return(<div>
     <CustomerNav/>
+    <br/><br/><br/>
     <Outlet/>
   </div>);
 }
@@ -28,6 +29,7 @@ function OwnerHeader(){
   return(
     <div>
       <OwnerNav/>
+      <br/><br/><br/>
       <Outlet/>
     </div>
   );
@@ -36,7 +38,7 @@ function OwnerHeader(){
 function App() {
 
   return (
-    <div>
+    <div style={{backgroundColor:"#ececec",height:"100%",minHeight:"100vh"}}>
       <BrowserRouter>
         <Routes>
           <Route element={<CustomerHeader/>}>

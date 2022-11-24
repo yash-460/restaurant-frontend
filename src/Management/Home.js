@@ -10,13 +10,20 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from "react-router-dom";
 
+
+/**
+ * this contians all functionality to edit the restaurant detail
+ * @returns landing page for restaturant management
+ */
 function RestaurantHome(){
 
+    // react state
     const [store,setStore] = useState({});
     const [failed, setFailed] = useState(false);
     
     useEffect(() =>{getStore()},[]);
 
+    // get the store on page load
     async function getStore(){
         let storeId;
         if(Auth.getJWT()){
@@ -27,7 +34,7 @@ function RestaurantHome(){
             return;
         }
         try{
-            let response = await axios.get(Path.storeService + "/Store/" + storeId,{
+            let response = await axios.get(Path.storeService + "/Store/" + storeId +"?active=false",{
                 headers:{
                     'Authorization': `Bearer ${Auth.getJWT()}`
                 } 
@@ -39,6 +46,7 @@ function RestaurantHome(){
         }
     }
 
+    // diplays single product
     function displayProduct(p){
         let body = <span style={{wordBreak:"break-word"}}>{p.description} <br/><i><b>${p.price}</b></i> </span>;
         return (
@@ -48,6 +56,7 @@ function RestaurantHome(){
         );        
     }
 
+    // diplay error
     function displayError(){
         return(
             <h2>
@@ -56,6 +65,7 @@ function RestaurantHome(){
         );
     }
 
+    // display Restaurant UI (no logic)
     function dispalyRestaurant(){
         return(
             <Container style={{marginTop:"20px"}}>
@@ -71,6 +81,7 @@ function RestaurantHome(){
         );
     }
 
+    // renders the page
     return(
         <div>
             {failed ? displayError() : dispalyRestaurant()}

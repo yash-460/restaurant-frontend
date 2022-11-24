@@ -1,8 +1,10 @@
 import { PhotoCamera } from "@mui/icons-material";
-import { Alert, Button, ButtonBase, Card, CardActionArea, CardActions, CardContent, CardMedia, Chip, Paper, Snackbar, Typography } from "@mui/material";
+import { Alert, Button, ButtonBase, Card, CardActionArea, CardActions, CardContent, CardMedia, Chip, InputBase, Pagination, Paper, Snackbar, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { useState } from "react";
 import img from "../img/img.png";
+import SearchIcon from '@mui/icons-material/Search';
+import { LoadingButton } from "@mui/lab";
 
 
 export function RectangularCard(props){
@@ -12,7 +14,7 @@ export function RectangularCard(props){
                     <b>{props.header}</b><br/>
                     {props.body}
                 </div>
-                <div style={{alignSelf:"center",marginLeft:"auto",padding:"0 5px 0 10px",display:"flex"}}>
+                <div style={{alignSelf:"center",marginLeft:"auto",padding:"0 5px 0 10px",display:"flex",alignItems:"center"}}>
                     {props.children}
                 </div>                
             </Paper>
@@ -66,7 +68,7 @@ export function UploadButton(props){
     );
 }
 
-export default function SuccessSnackbars(props) {
+export function SuccessSnackbars(props) {
   
     const handleClose = (event, reason) => {
       if (reason === 'clickaway') {
@@ -83,4 +85,81 @@ export default function SuccessSnackbars(props) {
           </Alert>
         </Snackbar>
     );
-  }
+}
+
+export function CustomPagination(props){
+
+    const [pageIndex,setPageIndex] = useState(1);
+
+    function changePage(e,_pageIndex){
+        if(_pageIndex != pageIndex){
+            setPageIndex(_pageIndex);
+            props.fetchData(_pageIndex);
+        }
+    }
+
+    return(
+        <div>
+            {props.children}
+            <Pagination color={props.color? props.color : "primary"} count={props.TotalPage} sx={{margin:"auto",width:"fit-content"}} showFirstButton showLastButton onChange={changePage}/>
+        </div>
+    ); 
+} 
+
+export function SearchBar(props){
+    const [searchField,setSearchField] = useState("");
+
+    return(
+        <Paper elevation={3} sx={{ display: 'flex', alignItems: 'center', width: 400,margin:"auto",padding:"5px", borderRadius:"10px"}}>
+            <SearchIcon />
+            <form onSubmit={(e) => {e.preventDefault();props.search(searchField);}}>
+            <InputBase sx={{ ml: 1, flex: 1}} placeholder={props.placeholder ? props.placeholder : "Search..."} onChange={(e) =>  setSearchField(e.target.value)} value={searchField}/>
+            </form>
+        </Paper>
+    );
+}
+
+export function DateRange(props){
+
+    const [startDate,setStartDate] = useState("");
+    const [endDate,setEndDate] = useState("");
+    const [loading,setLoading] = useState(false);
+    const [errorMessage,setErrorMessage] = useState("");
+
+    async function search(){
+        setLoading(true);
+        setErrorMessage("");
+        if(!props.allowNull){
+            if(!startDate || !endDate){
+                setErrorMessage("Must select both Start & End Date");
+                setLoading(false);
+                return;
+            }
+            if(startDate > endDate){
+                setErrorMessage("Start Date cannot be after end date");
+                setLoading(false);
+                return;
+            }
+            await props.search(startDate,endDate);
+        }else{
+            if(!startDate || !endDate){
+                await props.search(startDate,endDate);
+            }else if(startDate > endDate){
+                setErrorMessage("Start Date cannot be after end date");
+                setLoading(false);
+                return;
+            }else{await props.search(startDate,endDate)};
+        }
+        setLoading(false);
+    }
+
+    return(
+        <div style={props.style}>
+                {props.label} <input style={{padding:"5px",borderRadius:"5px"}} type="date" value={startDate} onChange={(e)=> setStartDate(e.target.value)}/>
+                &nbsp;&nbsp;&nbsp;<b>-</b>&nbsp; <input style={{padding:"5px",borderRadius:"5px"}} type="date" value={endDate} onChange={(e)=> setEndDate(e.target.value)}/>
+                &nbsp;&nbsp;&nbsp;&nbsp; <LoadingButton variant="contained" size="small" loading={loading} onClick={search}>{props.buttonName ? props.buttonName : "submit"}</LoadingButton>
+                <br/>
+                <span style={{color:"red",fontSize:"12pt"}}>{errorMessage}</span> 
+        </div>
+    );
+}

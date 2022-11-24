@@ -2,20 +2,20 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { LoadingButton } from "@mui/lab";
 import { Button, CardMedia, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import img from "../img/img.png";
 import { Auth } from "./auth";
 import { Path } from "./Constants";
 import { ErrorMessage } from "./errorMessage";
 
-export function AddToCart(props){
+export function CartDialog(props){
     const [loading,setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [form,setForm] = useState({
         productId:0,
         quantity:1,
-        instruction:""
+        instruction: ""
     });
     const location = useLocation();
     const navigate = useNavigate();
@@ -24,6 +24,7 @@ export function AddToCart(props){
         const { name, value } = e.target;
         setForm({...form, [name] :value});
     }
+
     async function submitForm(e){
         e.preventDefault();
         if(!Auth.getJWT()){

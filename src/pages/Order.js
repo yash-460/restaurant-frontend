@@ -8,14 +8,19 @@ import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
 import { helper } from "../util/helper";
-import { RectangularCard, RestaurantHeader } from "../util/UIComponent";
+import { CustomPagination, DateRange, RectangularCard, RestaurantHeader } from "../util/UIComponent";
 import {OrderDetail,  RateOrder } from "./Order_Partial";
+
 
 export function Order(){
 
     const [failed,setFailed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [Orders,setOrders] = useState([]);
+    const [totalPage, setTotalPage] = useState(0);
+    const [startDate,setStartDate] = useState("");
+    const [endDate,setEndDate] = useState("");
+
     const [detailDialogOpen,setDetailDialogOpen] = useState(false);
     const [detailDialogOrder, setDetailDialogOrder] = useState(null);
 
@@ -48,17 +53,18 @@ export function Order(){
         fetchOrder();
     },[]);
 
-    async function fetchOrder(){
+    async function fetchOrder(page,start,end){
         try{
             let response = await axios.get(
-                Path.OrderService + "/Orders",{
+                `${Path.OrderService}/Orders?startDate=${start == null ? startDate : start}&endDate=${end ==  null ? endDate : end}&pageSize=6&pageIndex=${page ? page : 1}`,{
                     headers:{
                         'Authorization': `Bearer ${Auth.getJWT()}`
                     }
                 }
             );
             console.log(response);
-            setOrders(response.data?.$values);
+            setTotalPage(response.data?.totalPages);
+            setOrders(response.data?.items.$values);
         }catch (error){
             console.log(error);
             setFailed(true);
@@ -77,9 +83,13 @@ export function Order(){
     }
 
 
-    function displayStatus(activeStep) {
-        let steps = ['Waiting Approval','In Progress','Done'];
-        
+    function displayStatus(status) {
+        let steps = ['In-Progress','Done'];
+        let activeStep = 0;
+        if(status == steps[0])
+            activeStep = 0;
+        else
+            activeStep = 2;
         return (
           <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep} alternativeLabel>
@@ -110,16 +120,18 @@ export function Order(){
         return (
             <RectangularCard key={order.orderId} header={order.store?.name} body={body}>
                 <div style={{textAlign:"center"}}>Status <br/><br/>
-                {displayStatus(3)}
+                {displayStatus(order.status)}
                 </div>
             </RectangularCard>
         );
     }
 
-    
-
-    function setRate(){
-
+    async function search(start,end){
+        console.log("start - end");
+        console.log(start);
+        setStartDate(start);
+        setEndDate(end);
+        await fetchOrder(1,start,end);
     }
 
     return (
@@ -127,9 +139,11 @@ export function Order(){
             {failed ? <h1 style={{textAlign:"center"}}>{ErrorMessage.contactSupport}</h1> :(
                 <div>
                     <h1 style={{textAlign:"center"}}>Orders & History</h1>
+                    <DateRange search={search} allowNull={true} buttonName="filter" style={{marginLeft:"auto",textAlign:"center"}}/>
                     {loading ? Array(4).fill(null).map((u,i)=> dispalySkeleton(i)) : (
-                        Orders.length ? <div>{Orders.map(o => displayOrder(o))}</div> : <h2 style={{textAlign:"center"}}>Nothing Ordered yet</h2>
+                        Orders.length ? <CustomPagination TotalPage={totalPage} fetchData={fetchOrder}>{<div>{Orders.map(o => displayOrder(o))}<br/><br/></div>}</CustomPagination> : <h2 style={{textAlign:"center"}}>No Ordere Found</h2>
                     )}
+                    <br/><br/>
                 </div>
             )}
             <RateOrder open={rateDialogOpen} handleClose={handleRateClose} order={rateOrder}/>

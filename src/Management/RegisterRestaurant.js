@@ -10,13 +10,19 @@ import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
 import { UploadButton } from "../util/UIComponent";
 
+/**
+ * Contains logic to register a shop
+ * @returns UI to register the shop
+ */
 function RegisterRestaurant(){
 
+    // Initial state
     const [form,setForm] = useState({name:"",registrationNumber:0, streetName:"",city:"",province:"",zip:"",imgLoc:""});
     const [loading,setLoading] = useState(false);
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
 
+    // register restaurant
     async function submitForm(e){
         e.preventDefault();
         setErrorMessage("");
@@ -44,11 +50,13 @@ function RegisterRestaurant(){
 
     }
 
+    // make form changes to maintain react state
     function handleChange(e){
         const { name, value } = e.target;
         setForm({...form, [name] :value});        
     }
 
+    // renders UI to register the restaurant
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>

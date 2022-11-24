@@ -10,13 +10,19 @@ import { Path } from "../util/Constants";
 import { ErrorMessage } from "../util/errorMessage";
 import { UploadButton } from "../util/UIComponent";
 
+/**
+ * This component takes care of adding Product to store
+ * @returns UI to add product
+ */
 function AddProduct(){
 
+    // State
     const [form,setForm] = useState({productName:"",storeId:0,description:"",price:1.0,imgLoc:""});
     const [errorMessage,setErrorMessage] = useState("");
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // handle form change
     function handleChange(e){
         const { name, value } = e.target;
         if(name === "price"){
@@ -26,6 +32,7 @@ function AddProduct(){
         }
     }
 
+    //send request to add product
     async function SubmitForm(e){
         e.preventDefault();
         setErrorMessage("");
@@ -46,14 +53,14 @@ function AddProduct(){
                     }
                 }           
             );
-            navigate("/Management");
+            navigate("/Management"); // on success
         }catch (error){
             setLoading(false);
             setErrorMessage(ErrorMessage.contactSupport);
         }
     }
 
-
+    // Renders UI to add product
     return (
         <Container fixed >
             <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>               
