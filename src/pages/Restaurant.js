@@ -98,6 +98,7 @@ function Restaurant(props){
         <div>
             {failed ? <h2>{ErrorMessage.contactSupport}</h2> : dispalyRestaurant()}
             <CartDialog  product={cartProduct} open={isCartOpen} handleClose={handleClose}/>
+            <br/><br/>
         </div>
     );
     

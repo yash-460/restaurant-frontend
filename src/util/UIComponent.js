@@ -6,6 +6,8 @@ import img from "../img/img.png";
 import SearchIcon from '@mui/icons-material/Search';
 import { LoadingButton } from "@mui/lab";
 
+/// Contains reuale UI component to be used all over application
+
 
 export function RectangularCard(props){
     return (<Container sx={{margin:"auto",marginTop:"40px"}}>

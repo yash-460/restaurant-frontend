@@ -78,14 +78,18 @@ function Login(props){
  */
 function Signin(){
 
-    const [form,setForm] = useState({userName:"",password:""});
+    const [form,setForm] = useState({userName:"",password:"",firstName:"",lastName:"",email:"",phoneNumber: 0});
     const [errorMessage,setErrorMessage] = useState("");
     const navigate = useNavigate();
     const [loading,setLoading] = useState(false);
 
     function handleChange(e){
-        const { name, value } = e.target; 
-        setForm({...form, [name] :value});
+        const { name, value } = e.target;
+        if(name == "phoneNumber"){
+            setForm({...form,[name]: parseInt(value)});
+        }else{
+            setForm({...form, [name] :value});
+        }
     }
 
     async function submitForm(e){
@@ -101,30 +105,38 @@ function Signin(){
         }catch(error){
             console.log(error);
             setLoading(false);
-            setErrorMessage(ErrorMessage.contactSupport);
+            if(error.response.data){
+                if(error.response.data.status === 409){
+                    setErrorMessage("User name already exist");
+                }else{
+                    setErrorMessage(ErrorMessage.contactSupport);
+                }
+            }else{
+                setErrorMessage(ErrorMessage.contactSupport);
+            }
         }
     }
 
     return (
         <Container fixed >
-            <Paper elevation={2} style={{margin:"auto",marginTop:"50px",textAlign:"center",padding:"10px 50px", width:"max-content"}}>
-                <h2>Create Account</h2>
+            <Paper elevation={2} style={{margin:"auto",marginTop:"50px",padding:"10px 50px", width:"max-content"}}>
+                <h2 style={{textAlign:"center"}}>Create Account</h2>
                 <form onSubmit={submitForm}>
                     <TextField required label="User Name" name="userName" value={form.userName} onChange={handleChange} size="small" margin="dense" inputProps={{size:"40"}}/>
                     <br/>
                     <TextField required label="Password" name="password" value={form.password} onChange={handleChange} size="small"  margin="dense" inputProps={{size:"40",minLength:8}} type="password"/>
                     <br/>
-                    <TextField label="First Name" size="small" margin="dense" value={form.firstName} onChange={handleChange} inputProps={{size:"40",maxLength:40}}/>
+                    <TextField label="First Name" size="small" name="firstName" margin="dense" value={form.firstName} onChange={handleChange} inputProps={{size:"40",maxLength:40}}/>
                     <br/>
-                    <TextField label="Last Name" size="small" margin="dense" value={form.lastName} onChange={handleChange} inputProps={{size:"40",maxLength:40}}/>
+                    <TextField label="Last Name" size="small" name="lastName" margin="dense" value={form.lastName} onChange={handleChange} inputProps={{size:"40",maxLength:40}}/>
                     <br/>
-                    <TextField required label="email" size="small" margin="dense" value={form.email} onChange={handleChange} inputProps={{size:"40",maxLength:40}} type="email"/>
+                    <TextField required label="email" size="small" name="email" margin="dense" value={form.email} onChange={handleChange} inputProps={{size:"40",maxLength:40}} type="email"/>
                     <br/>
-                    <TextField label="Phone Number" size="small" margin="dense" value={form.phoneNumber} onChange={handleChange} inputProps={{size:"40",max:9999999999}} type="tel"/>
+                    <TextField label="Phone Number" size="small" name="phoneNumber" margin="dense" value={form.phoneNumber ? form.phoneNumber : ""} onChange={handleChange} inputProps={{size:"40",max:9999999999,type:"number"}}/>
                     <br/>
-                    <span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span> 
+                    <span style={{color:"red",fontSize:"10pt"}}>{errorMessage}</span> 
                     <br/>
-                    <LoadingButton loading={loading}  variant="contained" size="small" sx={{margin:"10px"}} type="submit">Sign up</LoadingButton>
+                    <LoadingButton loading={loading}  variant="contained" size="small" sx={{margin:"auto",marginTop:"10px",display:"block"}} type="submit">Sign up</LoadingButton>
                 </form>
             </Paper>
         </Container>

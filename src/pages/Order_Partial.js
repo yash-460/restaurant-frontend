@@ -127,7 +127,7 @@ export function OrderDetail(props){
                     {props.order?.orderDetails.$values.map(od => DisplayOrderDetail(od))}
                     <div style={{margin:"auto",maxWidth:"fit-content"}}>
                     <p><b>Amount:</b> {totalAmount.toFixed(2)}</p>
-                    <p><b>Tax:</b> {props.order?.tax}</p>
+                    <p><b>Tax:</b> {props.order?.tax} %</p>
                     <p><b>Total:</b> {((props.order?.tax * totalAmount)/100 + totalAmount).toFixed(2)}</p>
                     </div>
                 </DialogContent>

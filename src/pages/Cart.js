@@ -133,7 +133,7 @@ export function Cart(){
             <div style={{padding:"25px",margin:"auto",maxWidth:"fit-content"}}>
                 <div style={{margin:"auto",maxWidth:"fit-content"}}>
                 <p><b>Amount:</b> {totalAmount.toFixed(2)}</p>
-                <p><b>Tax:</b> {tax}</p>
+                <p><b>Tax:</b> {tax} %</p>
                 <p><b>Total:</b> {((tax * totalAmount)/100 + totalAmount).toFixed(2)}</p>
                 </div>
                 <Button variant="contained" onClick={()=> {createCartItems();setDisplayPaymentDialog(true);}} >Proceed to Pay</Button>

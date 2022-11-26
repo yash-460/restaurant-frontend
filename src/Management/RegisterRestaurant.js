@@ -35,12 +35,16 @@ function RegisterRestaurant(){
                         'Authorization': `Bearer ${Auth.getJWT()}`
                     }
             });
-            response  = await axios.post(
-                Path.authService + "/authenticate/RefreshToken",{
-                headers:{
-                    'Authorization': `Bearer ${Auth.getJWT()}`
-                }});
-            sessionStorage.setItem('jwtToken', response.data.token);
+            try{
+                response  = await axios.post(
+                    Path.authService + "/authenticate/RefreshToken",{
+                    headers:{
+                        'Authorization': `Bearer ${Auth.getJWT()}`
+                    }});
+                sessionStorage.setItem('jwtToken', response.data.token);
+            }catch(error){
+                sessionStorage.removeItem('jwtToken');
+            }
             navigate("/Management");
         }catch (error){
             console.log(error);
@@ -64,15 +68,15 @@ function RegisterRestaurant(){
                 <form onSubmit={submitForm}>
                     <TextField value={form.name} name="name" onChange={handleChange} required label="Shop Name" size="small" margin="dense" inputProps={{size:"40"}}/>
                     <br/>
-                    <TextField value={form.registrationNumber} name="registrationNumber" onChange={handleChange} required label="Registration Number" size="small" type="number" margin="dense" inputProps={{size:"20",maxLength:9}}/>
+                    <TextField value={form.registrationNumber} name="registrationNumber" required onChange={handleChange} label="Registration Number" size="small" type="number" margin="dense" inputProps={{size:"20",maxLength:9}}/>
                     <br/>
-                    <TextField value={form.streetName} name="streetName" onChange={handleChange} label="Street Name" size="small" margin="dense" inputProps={{size:"16"}}/>
+                    <TextField value={form.streetName} name="streetName" required onChange={handleChange} label="Street Name" size="small" margin="dense" inputProps={{size:"16"}}/>
                     &nbsp;&nbsp;
-                    <TextField value={form.city} name="city" onChange={handleChange} label="City" size="small" margin="dense" inputProps={{size:"15"}}/>                
+                    <TextField value={form.city} name="city" required onChange={handleChange} label="City" size="small" margin="dense" inputProps={{size:"15"}}/>                
                     <br/>
-                    <TextField value={form.province} name="province" onChange={handleChange} label="Province" size="small" margin="dense" inputProps={{size:"16"}}/>
+                    <TextField value={form.province} required name="province" onChange={handleChange} label="Province" size="small" margin="dense" inputProps={{size:"16"}}/>
                     &nbsp;&nbsp;    
-                    <TextField value={form.zip} name="zip" onChange={handleChange} label="Zip code" size="small" margin="dense" inputProps={{size:"15"}}/>                
+                    <TextField value={form.zip} name="zip" required onChange={handleChange} label="Zip code" size="small" margin="dense" inputProps={{size:"15"}}/>                
                     <br/>
                     <UploadButton handleUpload={(content)=> setForm({...form,imgLoc:content})} removeUpload={()=>setForm({...form,imgLoc:""})}/>
                     <br/>

@@ -14,8 +14,8 @@ import { RectangularCard } from "../util/UIComponent";
 export function Report(){
 
     const [report,setReport] = useState([]);
-    const [startDate,setStartDate] = useState("2022-11-01");
-    const [endDate, setEndDate] = useState("2022-12-01");
+    const [startDate,setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [loading,setLoading] = useState(false);
     const [errorMessage,setErrorMessage] = useState("");
 
@@ -58,7 +58,7 @@ export function Report(){
         );
         return(
             <RectangularCard key={product.productId} header={product.productName} body={body} sx={{maxWidth:"500px"}} >
-                {product.quantity} &nbsp;&nbsp;<b>Qty</b>
+                {product.quantity} <span>&nbsp;&nbsp;</span><b>Qty</b>
             </RectangularCard>
         );
     }
@@ -85,12 +85,13 @@ export function Report(){
                 <br/>
                 {report.length? (
                     <div style={{display:"flex",justifyContent: "space-evenly"}}>
-                        <span><b>Total Sale: </b>${totalAmount}</span> <span><b>Total Tax: </b>${totalTax}</span><span> <b>Total: </b>${(totalAmount + totalTax).toFixed(2)}</span>
+                        <span><b>Total Sale: </b>${totalAmount.toFixed(2)}</span> <span><b>Total Tax: </b>${totalTax.toFixed(2)}</span><span> <b>Total: </b>${(totalAmount + totalTax).toFixed(2)}</span>
                     </div>
                 ): <h2 style={{textAlign:"center"}}>No Data</h2>}
             </Paper>
 
             {report.length ? report.map(r => displayInfobyProduct(r)) : ""}
+            <br/><br/>
         </div>
     );
 }

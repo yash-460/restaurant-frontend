@@ -78,38 +78,38 @@ function App() {
           }/>
           <Route element={< OwnerHeader/>}>
               <Route path="/Management" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <RestaurantHome/>
                 </RequireLogin>
               }/>
             
               <Route path="/Management/Edit" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <EditRestaurant/>
                 </RequireLogin>
               }/>
               <Route path="/Management/Add" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <AddProduct/>
                 </RequireLogin>
               }/>
               <Route path="/Management/product" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <EditProduct/>
                 </RequireLogin>
               }/>
               <Route path="/Management/Orders" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <LiveOrder/>
                 </RequireLogin>
               }/>
               <Route path="/Management/Report" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <Report/>
                 </RequireLogin>
               }/>
               <Route path="Management/Profile" element={
-                <RequireLogin>
+                <RequireLogin restaurantUser={true}>
                   <UserProfile/>
                 </RequireLogin>
               }/>

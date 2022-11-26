@@ -9,6 +9,9 @@ import { Auth } from "./auth";
 import { Path } from "./Constants";
 import { ErrorMessage } from "./errorMessage";
 
+/**
+ * This is contains logic for displaying cart dialog
+ */
 export function CartDialog(props){
     const [loading,setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -56,9 +59,9 @@ export function CartDialog(props){
     }
     return (
         <div>
-            <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center"}} maxWidth="s">
+            <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center",maxWidth:"450px",margin:"auto"}}>
                 <DialogTitle>
-                    <CardMedia component="img" sx={{margin:"auto"}} height="170" image={props.product.imgLoc ? ("data:image/*;base64, " + props.product.imgLoc) : img}/>   
+                    <CardMedia component="img" sx={{margin:"auto",borderRadius:"5px"}} height="220" image={props.product.imgLoc ? ("data:image/*;base64, " + props.product.imgLoc) : img}/>   
                 </DialogTitle>
                 <DialogContent>
                     <b>{props.product.productName}</b><br/>

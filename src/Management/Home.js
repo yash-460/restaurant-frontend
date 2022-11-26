@@ -85,6 +85,7 @@ function RestaurantHome(){
     return(
         <div>
             {failed ? displayError() : dispalyRestaurant()}
+            <br/><br/>
         </div>
     );
     
