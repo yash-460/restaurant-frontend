@@ -37,7 +37,7 @@ function RegisterRestaurant(){
             });
             try{
                 response  = await axios.post(
-                    Path.authService + "/authenticate/RefreshToken",{
+                    Path.authService + "/authenticate/RefreshToken",null,{
                     headers:{
                         'Authorization': `Bearer ${Auth.getJWT()}`
                     }});

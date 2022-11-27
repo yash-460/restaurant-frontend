@@ -1,3 +1,8 @@
+/**
+ * I Yash Chaudhary, 000820480 certify that this material is my original work.
+ * No other person's work has been used without due acknowledgement. 
+ * I have not made my work available to anyone else.
+ */
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { AddProduct } from './Management/AddProduct';
@@ -47,69 +52,69 @@ function App() {
               <Route path="/login" element={<Login/>}/>
               <Route path="/SignUp" element={<Signin />}/>
               <Route path="/Cart" element={
-                <RequireLogin>
+                <RequireLogin  customerUserOnly={true}>
                   <Cart/>
                 </RequireLogin>
               }/>
               
               <Route path="/Orders" element={
-                <RequireLogin>
+                <RequireLogin customerUserOnly={true}>
                   <Order/>
                 </RequireLogin>
               }/>
 
               <Route path="/favourite" element={
-                <RequireLogin>
+                <RequireLogin  customerUserOnly={true}>
                   <FavouritePage/>
                 </RequireLogin>
               }/>
 
               <Route path="/Profile" element={
-                <RequireLogin>
+                <RequireLogin customerUserOnly={true}>
                   <UserProfile/>
                 </RequireLogin>
               }/>
           </Route>
 
           <Route path="/Register" element={
-            <RequireLogin>
+            <RequireLogin customerUserOnly={true}>
               <RegisterRestaurant/>
             </RequireLogin>
           }/>
           <Route element={< OwnerHeader/>}>
               <Route path="/Management" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <RestaurantHome/>
                 </RequireLogin>
               }/>
             
               <Route path="/Management/Edit" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <EditRestaurant/>
                 </RequireLogin>
               }/>
               <Route path="/Management/Add" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <AddProduct/>
                 </RequireLogin>
               }/>
               <Route path="/Management/product" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <EditProduct/>
                 </RequireLogin>
               }/>
               <Route path="/Management/Orders" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <LiveOrder/>
                 </RequireLogin>
               }/>
               <Route path="/Management/Report" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <Report/>
                 </RequireLogin>
               }/>
               <Route path="Management/Profile" element={
-                <RequireLogin restaurantUser={true}>
+                <RequireLogin ownerUserOnly={true}>
                   <UserProfile/>
                 </RequireLogin>
               }/>

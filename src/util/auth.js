@@ -16,12 +16,19 @@ export function RequireLogin(props){
     const location = useLocation();
 
     if(Auth.getJWT()){
-        if(props.restaurantUser){
+        if(props.ownerUserOnly){
             if(!JSON.parse(atob(Auth.getJWT().split(".")[1])).Store){
                 return(
                     <div><h1 style={{color:"red"}}>Access Denied</h1></div>
                 );
             }                
+        }
+        if(props.customerUserOnly){
+            if(JSON.parse(atob(Auth.getJWT().split(".")[1])).role.includes("owner")){
+                return(
+                    <div><h1 style={{color:"red"}}>Access Denied</h1></div>
+                );
+            }
         }
         return(
            <div>{props.children}</div>
