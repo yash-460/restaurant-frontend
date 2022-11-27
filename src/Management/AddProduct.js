@@ -3,7 +3,7 @@ import { LoadingButton } from "@mui/lab";
 import { Button, Paper, TextField } from "@mui/material";
 import { Container } from "@mui/system";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "../util/auth";
 import { Path } from "../util/Constants";
@@ -22,6 +22,15 @@ function AddProduct(){
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(()=>{
+        if(Auth.getJWT()){
+            let storeId = JSON.parse(atob(Auth.getJWT().split(".")[1])).Store;
+            setForm({...form, storeId:parseInt(storeId)});
+        }else{
+            console.log("token not found");
+        }
+    },[]);
+
     // handle form change
     function handleChange(e){
         const { name, value } = e.target;
@@ -37,13 +46,6 @@ function AddProduct(){
         e.preventDefault();
         setErrorMessage("");
         setLoading(true);
-        if(Auth.getJWT()){
-            let storeId = JSON.parse(atob(Auth.getJWT().split(".")[1])).Store;
-            setForm({...form, storeId:parseInt(storeId)});
-        }else{
-            console.log("token not found");
-            return;
-        }
         try{
             let response = await axios.post(
                 Path.storeService + "/Product",
@@ -55,6 +57,7 @@ function AddProduct(){
             );
             navigate("/Management"); // on success
         }catch (error){
+            console.log(error);
             setLoading(false);
             setErrorMessage(ErrorMessage.contactSupport);
         }

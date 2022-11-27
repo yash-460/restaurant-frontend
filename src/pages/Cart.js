@@ -8,7 +8,7 @@ import { ErrorMessage } from "../util/errorMessage";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import { CartDialog } from "../util/CartDialog";
+import { CartDialog, CartEditDialog } from "../util/CartDialog";
 import { Payment } from "../util/Payment";
 
 
@@ -27,6 +27,14 @@ export function Cart(){
     const [tax,setTax] = useState(null);
     const [displayPaymentDialog,setDisplayPaymentDialog] = useState(false);
     const [cartPaymentItems,setCartPaymentItems] = useState([]);
+
+    const [editDialogOpen,setEditDialogOpen] = useState(false);
+    const [editDialogItem,setEditDialogItem] = useState({});
+
+    function openEditDialog(i){
+        setEditDialogItem(i);
+        setEditDialogOpen(true);
+    }
 
     const navigate = useNavigate();
 
@@ -94,7 +102,7 @@ export function Cart(){
         let body = <span style={{wordBreak:"break-word"}}><b><i>Instruction</i></b>: {item.instruction} <br/><i><b>${item.product.price}</b></i> </span>;
         
         return (
-            <RectangularCard key={item.product.productId} header={item.product.productName} body={body}>
+            <RectangularCard key={item.product.productId} header={item.product.productName} body={body} onClick={()=>openEditDialog(item)}>
                 <span style={{margin:"auto",display:"flex",fontSize:"x-large"}}>&#215; <span>{item.quantity}</span></span>&nbsp;&nbsp;
                 <IconButton onClick={()=>{
                     setDialogOpen(true);
@@ -153,6 +161,16 @@ export function Cart(){
         );
     }
 
+    function handleEdit(i){
+        cart.forEach(item => {
+            if(item.productId === i.productId){
+                item.quantity = i.quantity;
+                item.instruction = i.instruction;
+            }
+        });
+        setCart(cart);
+    }
+
     async function CreateOrder(id){
         try{
             let response = await axios.post(
@@ -179,6 +197,7 @@ export function Cart(){
                     {tax !== null && cart.length ? displayBill() : ""}
                     {displayDeleteDialog()}
                     {displayPaymentDialog ? <Payment CreateOrder={CreateOrder} open={displayPaymentDialog} items={cartPaymentItems} handleClose={()=> setDisplayPaymentDialog(false)}/>: ""}
+                    <CartEditDialog open={editDialogOpen} handleClose={()=> setEditDialogOpen(false)} handleEdit={handleEdit} item={editDialogItem}/>
                 </Container>
             )}
         </div>

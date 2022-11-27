@@ -1,6 +1,6 @@
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { LoadingButton } from "@mui/lab";
-import { Button, CardMedia, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Button, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -77,4 +77,57 @@ export function CartDialog(props){
             </Dialog>
         </div>
     )
+}
+
+export function CartEditDialog(props){
+
+    const [item,setItem] = useState({userName:"",productId:1,quantity:1,instruction:""});
+    const [loading, setLoading] = useState(false);
+    const [errorMessage,setErrorMessage] = useState("");
+
+    useEffect(()=>{
+        if(props.item.productId){
+            setItem({...item,quantity:props.item.quantity,instruction:props.item.instruction,productId:props.item.productId,userName:props.item.userName});
+        }
+    },[props.item]);
+
+    function handleChange(e){
+        let { name, value } = e.target;
+        if(name === "quantity")
+            value = parseInt(value);
+        setItem({...item,[name]:value});
+    }
+
+    function changeCartItem(){
+        setLoading(true);
+        setErrorMessage("");
+        try{
+            let response = axios.put(Path.OrderService + "/Cart",
+                item,{
+                    headers:{
+                        'Authorization': `Bearer ${Auth.getJWT()}`
+                    }
+                });
+            props.handleEdit(item);
+            props.handleClose();
+        }catch(error){
+            setErrorMessage(ErrorMessage.contactSupport);
+        }
+        setLoading(false);
+    }
+
+    return(
+        <Dialog open={props.open} onClose={props.handleClose} sx={{maxWidth:"450px",margin:"auto"}}>
+            <DialogTitle sx={{textAlign:"center"}}>Edit Product</DialogTitle>
+            <DialogContent>
+                <b style={{display:"inline-block", marginBottom:"10px"}}>Product:</b> {props.item.product ? props.item.product.productName : ""}
+                <br/>
+                <TextField type="text" name="instruction" label="Special Instruction" size="small" value={item.instruction} onChange={handleChange} inputProps={{size:"30",maxLength:100}}/>
+                <br/>
+                <TextField type="number" label="Qty" name="quantity" value={item.quantity} size="small" onChange={handleChange} inputProps={{min:1}} sx={{m:1,width:'10ch'}}/>
+                <br/><span style={{color:"red",fontSize:"8pt"}}>{errorMessage}</span>
+                <LoadingButton loading={loading} onClick={changeCartItem} sx={{margin:"auto",marginTop:"10px",display:"block"}}>Edit</LoadingButton>    
+            </DialogContent>
+        </Dialog>
+    );
 }
